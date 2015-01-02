@@ -4,28 +4,60 @@
     <meta charset="UTF-8">
     <title>TODO List</title>
     <link rel="stylesheet" href="semantic/css/semantic.min.css"/>
-
+    <style>
+        body {
+            font-family: '微软雅黑';
+        }
+        i.remove {
+            cursor: pointer;
+        }
+    </style>
     <script src="angular/angular.min.js"></script>
+    <script>
+        var module = angular.module("TODOList",[]);
+        var todoController = module.controller("todoController",[function() {
+            var _self = this;
+            _self.todo = "";
+            _self.todoList = [];
+            _self.submit = function() {
+                !!_self.todo && _self.todoList.push(_self.todo);
+                _self.todo = "";
+            };
+            _self.deleteToDo = function($index) {
+                _self.todoList.splice($index,1)
+            };
+        }]);
+    </script>
 </head>
-<body>
+<body ng-app="TODOList">
     <div class="ui four column grid">
         <div class="column two">
 
         </div>
-        <div class="column eight wide">
+        <div class="column eight wide" ng-controller="todoController as ctrl">
             <div class="ui segment">
-                <div class="ui large header">待办记录</div>
+                <div class="ui large header" contenteditable="true">待办记录</div>
                 <div class="ui blue inverted segment">
                     请在下面的输入框中输入待办项：
                 </div>
                 <div class="ui form">
                     <div class="field">
-                        <form action="">
+                        <form action="" ng-submit="ctrl.submit()">
                             <div class="ui left icon input">
-                                <input placeholder="Something to do..." type="text">
+                                <input ng-model="ctrl.todo" placeholder="Something to do..." type="text">
                                 <i class="bookmark icon"></i>
                             </div>
                         </form>
+                    </div>
+                </div>
+                <div class="ui small header" ng-hide="ctrl.todoList.length == 0">当前有{{ctrl.todoList.length}}项</div>
+                <div class="ui list">
+                    <div class="item" ng-repeat="todo in ctrl.todoList track by $index">
+                        <i class="mail outline icon"></i>
+                        <div class="content">
+                            <a class="header">{{todo}}</a>
+                            <i class="remove icon" ng-click="ctrl.deleteToDo($index)"></i>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -34,6 +66,7 @@
 
         </div>
     </div>
+
 
 </body>
 </html>
